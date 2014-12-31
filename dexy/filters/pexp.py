@@ -196,9 +196,9 @@ class PexpectReplFilter(SubprocessFilter):
 
                     section_transcript += self.strip_newlines(proc.before)
                     start = proc.after
-                except pexpect.EOF:
+                except pexpect.EOF as e:
                     self.log_debug("EOF occurred!")
-                    raise DexyEOFException()
+                    raise DexyEOFException(unicode(e))
                 except pexpect.TIMEOUT as e:
                     for c in proc.before:
                         print ord(c), ":", c
@@ -208,8 +208,6 @@ class PexpectReplFilter(SubprocessFilter):
                     self.log_warn(msg)
                     raise UserFeedback(msg)
                 except pexpect.ExceptionPexpect as e:
-                    raise UserFeedback(unicode(e))
-                except pexpect.EOF as e:
                     raise UserFeedback(unicode(e))
 
             if self.setting('strip-regex'):
